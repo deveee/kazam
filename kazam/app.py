@@ -672,6 +672,11 @@ class KazamApp(GObject.GObject):
     def cb_record_clicked(self, widget):
         logger.debug("Record clicked, invoking Screencast.")
         self.run_counter()
+        
+    def cb_stop_clicked(self, widget):
+        logger.debug("Stop clicked.")
+        if self.recording:
+            self.cb_stop_request(widget)
 
     def cb_counter_finished(self, widget):
         logger.debug("Counter finished.")
@@ -776,6 +781,9 @@ class KazamApp(GObject.GObject):
                 self.grabber.autosave(fname)
             else:
                 self.grabber.save_capture(self.old_pic_path)
+                
+        self.btn_record.set_visible(True)
+        self.btn_stop.set_visible(False)
 
     def cb_pause_request(self, widget):
         logger.debug("Pause requested.")
@@ -983,8 +991,8 @@ class KazamApp(GObject.GObject):
         logger.debug("Starting counter.")
         self.countdown.run(prefs.countdown_timer)
         self.recording = True
-        logger.debug("Hiding main window.")
-        self.window.hide()
+        self.btn_record.set_visible(False)
+        self.btn_stop.set_visible(True)
         if self.main_mode == MODE_SCREENCAST or self.main_mode == MODE_SCREENSHOT:
             try:
                 if self.record_mode == MODE_AREA and prefs.area:
@@ -1030,6 +1038,9 @@ class KazamApp(GObject.GObject):
             self.btn_allscreens.set_sensitive(True)
         else:
             self.btn_allscreens.set_sensitive(False)
+            
+        self.btn_stop.set_visible(False)
+        self.btn_record.set_visible(True)
 
     def cb_webcam_change(self, widget):
         prefs.get_webcam_sources()
