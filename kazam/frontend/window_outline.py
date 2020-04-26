@@ -68,6 +68,7 @@ class OutlineWindow(GObject.GObject):
             logger.warning("Compositing window manager not found, expect the unexpected.")
             self.compositing = False
 
+
         #
         # Hardcore Launcher and Panel size detection
         #
@@ -88,14 +89,12 @@ class OutlineWindow(GObject.GObject):
         except:
             logger.warning("Unable to detect correct launcher and panel sizes. Using fallback.")
 
-        logger.debug("Got panel size and launcher.")
+        logger.debug("Got all sizes.")
+
         self.window.move(self.x, self.y)
         self.window.set_default_geometry(self.w, self.h)
         (x, y) = self.window.get_position()
         (w, h) = self.window.get_size()
-        logger.debug("Showing outline window.")
-        self.window.show_all()
-        logger.debug("Outline window shown.")
 
     def show(self):
         self.window.show_all()
@@ -147,3 +146,4 @@ class OutlineWindow(GObject.GObject):
 
         cr.stroke()
         cr.set_operator(cairo.OPERATOR_OVER)
+

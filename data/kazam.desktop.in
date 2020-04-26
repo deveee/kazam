@@ -6,7 +6,6 @@ _Keywords=screenshot;screencast;videorecord;desktop recording;
 Categories=GNOME;AudioVideo;
 Exec=kazam
 Icon=kazam
-X-Unity-IconBackgroundColor=#F56991
 Terminal=false
 Type=Application
 

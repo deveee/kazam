@@ -40,8 +40,8 @@ class KazamConfig(ConfigParser):
                          "codec":                 "0",
                          "counter":               "5",
                          "capture_cursor":        "True",
-                         "capture_speakers":      "False",
                          "capture_microphone":    "False",
+                         "capture_speakers":      "False",
                          "capture_cursor_pic":    "True",
                          "capture_borders_pic":   "True",
                          "framerate":             "15",
@@ -59,16 +59,6 @@ class KazamConfig(ConfigParser):
                          "shutter_sound":          "True",
                          "shutter_type":           "0",
                          "first_run":              "True",
-                         "webcam_source":          "0",
-                         "webcam_show_preview":    "True",
-                         "webcam_preview_pos":     "1",
-                         "webcam_resolution":      "0",
-                         "capture_speakers_w":     "False",
-                         "capture_microphone_w":   "False",
-                         "capture_speakers_b":     "False",
-                         "capture_microphone_b":   "False",
-                         "capture_keys":           "False",
-                         "capture_keys_b":         "False"
                          },
                 },
                 {"name": "keyboard_shortcuts",
@@ -83,7 +73,7 @@ class KazamConfig(ConfigParser):
     CONFIGFILE = os.path.join(CONFIGDIR, "kazam.conf")
 
     def __init__(self):
-        ConfigParser.__init__(self, self.DEFAULTS[0]['keys'])
+        super().__init__(self)
         if not os.path.isdir(self.CONFIGDIR):
             os.makedirs(self.CONFIGDIR)
         if not os.path.isfile(self.CONFIGFILE):
@@ -108,28 +98,15 @@ class KazamConfig(ConfigParser):
                     if d_key == key:
                         return d_section["keys"][key]
 
-    def get(self, section, key, raw=True, fallback=None):
+    def get(self, section, key, **kwargs):
         try:
-            ret = super(KazamConfig, self).get(section,
-                        key, raw=True, fallback=fallback)
-            if ret == "None":
-                default = self.find_default(section, key)
-                self.set(section, key, default)
-                self.write()
-                return default
-            else:
-                return ret
+            return super(KazamConfig, self).get(section, key, **kwargs)
         except NoSectionError:
             default = self.find_default(section, key)
             self.set(section, key, default)
             self.write()
             return default
         except NoOptionError:
-            default = self.find_default(section, key)
-            self.set(section, key, default)
-            self.write()
-            return default
-        except ValueError:
             default = self.find_default(section, key)
             self.set(section, key, default)
             self.write()
@@ -145,11 +122,11 @@ class KazamConfig(ConfigParser):
     def set(self, section, option, value):
         # If the section referred to doesn't exist (rare case),
         # then create it
-        if not self.has_section(section):
-            self.add_section(section)
-        ConfigParser.set(self, section, option, str(value))
+        super().set(section, option, str(value))
 
     def write(self):
         file_ = open(self.CONFIGFILE, "w")
         ConfigParser.write(self, file_)
         file_.close()
+
+
